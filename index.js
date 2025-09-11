@@ -40,6 +40,9 @@ class ZSUNUCARBot {
       // Create controller table
       this.db.run('CREATE TABLE IF NOT EXISTS controllers (callsign text, logon_date text, controller_name text, controller_cid text)');
       
+      // Create position activity tracking table
+      this.db.run('CREATE TABLE IF NOT EXISTS position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen timestamp DEFAULT CURRENT_TIMESTAMP)');
+      
       // Create airports of interest table (ZSU ARTCC only)
       this.db.run('CREATE TABLE IF NOT EXISTS airports (icao text)');
       
@@ -207,6 +210,11 @@ class ZSUNUCARBot {
       }
 
       console.log(`✅ Updated VATSIM data: ${vatsimData.controllers.length} controllers, ${vatsimData.pilots.length} pilots`);
+      
+      // Log any controllers we're tracking
+      if (vatsimData.controllers.length > 0) {
+        console.log(`📋 Controllers online: ${vatsimData.controllers.map(c => c.callsign).join(', ')}`);
+      }
     } catch (error) {
       console.error('❌ Error fetching VATSIM data:', error);
     }
@@ -234,6 +242,12 @@ class ZSUNUCARBot {
           }
 
           console.log(`🔍 Found ${controllers.length} controllers online`);
+          
+          if (controllers.length === 0) {
+            console.log('⚠️ No controllers found in database - this might indicate a VATSIM data fetch issue');
+            resolve();
+            return;
+          }
 
           // Check each controller against positions
           const processedControllers = new Set();
@@ -251,7 +265,9 @@ class ZSUNUCARBot {
               const { prefix, suffix, pos_name } = position;
               
               // Check if callsign matches position pattern exactly
-              if (callsign.startsWith(prefix) && callsign.endsWith(suffix)) {
+              // Use more precise matching to avoid false positives
+              const expectedCallsign = `${prefix}_${suffix}`;
+              if (callsign === expectedCallsign) {
                 this.checkControllerActivity(callsign, controller_cid, controller_name, pos_name);
                 processedControllers.add(callsign);
                 break; // Only process each controller once
@@ -269,7 +285,7 @@ class ZSUNUCARBot {
 
   checkControllerActivity(callsign, cid, controllerName, posName) {
     this.db.get(
-      'SELECT COUNT(*) as count FROM position_activity WHERE callsign = ? AND cid = ? AND status = "A"',
+      'SELECT COUNT(*) as count, last_seen FROM position_activity WHERE callsign = ? AND cid = ? AND status = "A"',
       [callsign, cid],
       (err, row) => {
         if (err) {
@@ -278,20 +294,26 @@ class ZSUNUCARBot {
         }
 
         if (row.count === 0) {
-          // Controller just came online
+          // Controller just came online - only notify if we haven't seen them recently
           this.db.run(
             'DELETE FROM position_activity WHERE callsign = ? AND cid = ?',
             [callsign, cid]
           );
           
           this.db.run(
-            'INSERT INTO position_activity VALUES (?, ?, ?, "A", ?)',
+            'INSERT INTO position_activity (callsign, cid, controller_name, status, pos_name, last_seen) VALUES (?, ?, ?, "A", ?, datetime("now"))',
             [callsign, cid, controllerName, posName]
           );
 
           const message = `***Well, hello there!*** ${controllerName} (CID ${cid}) just signed on to ${posName} (${callsign}).`;
           this.sendToChannel(this.staffChannel, message);
           console.log(`✅ Controller signed on: ${controllerName} to ${posName}`);
+        } else {
+          // Controller is still online - update last_seen timestamp
+          this.db.run(
+            'UPDATE position_activity SET last_seen = datetime("now") WHERE callsign = ? AND cid = ? AND status = "A"',
+            [callsign, cid]
+          );
         }
       }
     );
@@ -299,7 +321,7 @@ class ZSUNUCARBot {
 
   checkOfflineControllers(currentControllers) {
     this.db.all(
-      'SELECT callsign, controller_name, cid, pos_name FROM position_activity WHERE status = "A"',
+      'SELECT callsign, controller_name, cid, pos_name, last_seen FROM position_activity WHERE status = "A"',
       (err, activePositions) => {
         if (err) {
           console.error('❌ Error checking offline controllers:', err);
@@ -313,15 +335,31 @@ class ZSUNUCARBot {
           );
 
           if (!isStillOnline) {
-            // Controller went offline
-            this.db.run(
-              'DELETE FROM position_activity WHERE callsign = ? AND cid = ?',
-              [activePosition.callsign, activePosition.cid]
-            );
+            // Check if we've seen them recently (within last 2 minutes) to avoid false disconnections
+            this.db.get(
+              'SELECT datetime(last_seen, "+2 minutes") > datetime("now") as recently_seen FROM position_activity WHERE callsign = ? AND cid = ?',
+              [activePosition.callsign, activePosition.cid],
+              (err, timeCheck) => {
+                if (err) {
+                  console.error('❌ Error checking last seen time:', err);
+                  return;
+                }
 
-            const message = `***Byyyeeeeeeeee.*** ${activePosition.controller_name} (CID ${activePosition.cid}) just signed off of ${activePosition.pos_name} (${activePosition.callsign}).`;
-            this.sendToChannel(this.staffChannel, message);
-            console.log(`👋 Controller signed off: ${activePosition.controller_name} from ${activePosition.pos_name}`);
+                if (!timeCheck.recently_seen) {
+                  // Controller went offline and hasn't been seen recently
+                  this.db.run(
+                    'DELETE FROM position_activity WHERE callsign = ? AND cid = ?',
+                    [activePosition.callsign, activePosition.cid]
+                  );
+
+                  const message = `***Byyyeeeeeeeee.*** ${activePosition.controller_name} (CID ${activePosition.cid}) just signed off of ${activePosition.pos_name} (${activePosition.callsign}).`;
+                  this.sendToChannel(this.staffChannel, message);
+                  console.log(`👋 Controller signed off: ${activePosition.controller_name} from ${activePosition.pos_name}`);
+                } else {
+                  console.log(`⚠️ Skipping offline notification for ${activePosition.controller_name} - seen recently`);
+                }
+              }
+            );
           }
         }
       }

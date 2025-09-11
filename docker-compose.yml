@@ -1,7 +1,7 @@
 services:
   zsu-bot:
     build: .
-    container_name: zsu-nucar-bot
+    container_name: artcc-staffing-bot
     restart: unless-stopped
     env_file:
       - .env
