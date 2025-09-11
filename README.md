@@ -1,12 +1,12 @@
-# ZSU NUCAR Bot (JavaScript Version)
+# ARTCC Staffing Update Bot
 
-Discord bot that uses VATSIM data to notify about group flight activity and controller sign-ons/offs for ZSU ARTCC.
+Discord bot that uses VATSIM data to notify about group flight activity and controller sign-ons/offs for any ARTCC. Currently configured for ZSU (Puerto Rico & U.S. Virgin Islands) but easily customizable for any ARTCC.
 
 ## Features
 
 - **Group Flight Detection**: Alerts when 5+ aircraft are filed for the same route
 - **Controller Notifications**: Notifies when controllers sign on/off to monitored positions
-- **ZSU ARTCC Focus**: Monitors Puerto Rico and U.S. Virgin Islands airports and ZSU positions
+- **ARTCC Flexibility**: Easily configurable for any ARTCC - currently set up for ZSU (Puerto Rico & U.S. Virgin Islands)
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ Discord bot that uses VATSIM data to notify about group flight activity and cont
 ### Step 1: Get the Code
 ```bash
 git clone <repository-url>
-cd zsu-nucar-bot
+cd artcc-staffing-bot
 ```
 
 ### Step 2: Configure Environment Variables
@@ -37,7 +37,7 @@ nano .env     # Linux/Mac
 - `DISCORD_KEY`: Your Discord bot token (see Discord Bot Setup)
 - `STAFF_CHANNEL`: Channel ID for controller notifications
 - `GROUP_FLIGHT_CHANNEL`: Channel ID for group flight alerts
-- `ARTCC_ID`: Set to "ZSU" (already configured)
+- `ARTCC_ID`: Set to your ARTCC code (e.g., "ZSU", "ZNY", "ZLA", etc.)
 
 ### Step 3: Run with Docker
 ```bash
@@ -77,7 +77,7 @@ npm run setup
 
 **What setup.js does:**
 - Creates SQLite database with required tables
-- Populates airport data for ZSU ARTCC (Puerto Rico & U.S. Virgin Islands)
+- Populates airport data for the configured ARTCC (currently set to ZSU - Puerto Rico & U.S. Virgin Islands)
 - Sets up controller position monitoring (Tower, Ground, Approach, etc.)
 - **Note:** The bot automatically runs this on first startup, so manual setup is optional
 
@@ -95,7 +95,7 @@ npm start
 ### Step 1: Create Discord Application
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
 2. Click **"New Application"**
-3. Enter a name (e.g., "ZSU NUCAR Bot")
+3. Enter a name (e.g., "ARTCC Staffing Bot")
 4. Click **"Create"**
 
 ### Step 2: Create Bot
@@ -141,26 +141,26 @@ DISCORD_KEY=your_actual_bot_token_here
 STAFF_CHANNEL=123456789012345678
 GROUP_FLIGHT_CHANNEL=123456789012345678
 
-# Set this to your ARTCC's code (e.g., ZSU)
+# Set this to your ARTCC's code (e.g., ZSU, ZNY, ZLA, etc.)
 ARTCC_ID=ZSU
 ```
 
-### Monitored Airports (ZSU)
+### Default Configuration (ZSU Example)
 
-The bot monitors these ZSU airports for group flight activity:
+The bot comes pre-configured for ZSU ARTCC and monitors these airports for group flight activity:
 - Puerto Rico: TJSJ (SJU), TJIG (SIG), TJBQ (BQN), TJPS (PSE), TJMZ (MAZ), TJRV (RVR), TJVQ (VQS)
 - U.S. Virgin Islands: TIST (STT), TISX (STX)
 
-### Monitored Positions (ZSU)
-
-The bot tracks ZSU ARTCC positions including:
+And tracks these ZSU positions:
 - Center: ZSU_CTR (San Juan Center)
 - Approach/Departure: SJU_APP/DEP, STT_APP, STX_APP
 - Tower/Ground/Delivery: SJU_TWR/GND/DEL, STT_TWR/GND/DEL, STX_TWR/GND/DEL
 
+**Note:** You can easily replace these with your own ARTCC's airports and positions by following the customization guide below.
+
 ## Customizing for Your ARTCC
 
-The bot can be easily customized to monitor different airports and positions for your ARTCC.
+This bot is designed to work with any ARTCC. While it comes pre-configured for ZSU, you can easily customize it to monitor different airports and positions for your ARTCC.
 
 ### Step 1: Update setup.js
 
@@ -298,3 +298,7 @@ docker-compose ps
 - `Dockerfile` - Docker container configuration
 - `docker-compose.yml` - Docker orchestration
 - `docker-setup.bat/.sh` - Automated setup scripts
+
+## Credits
+
+This JavaScript/Node.js version is based on the original Python implementation by Jason (FriedrichKayak). The original Python version can be found at: [https://github.com/FriedrichKayak/vatsim-tabulator](https://github.com/FriedrichKayak/vatsim-tabulator)
