@@ -17,6 +17,9 @@ COPY . .
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S bot -u 1001
 
+# Create data directory and set proper permissions
+RUN mkdir -p /app/data && chown -R bot:nodejs /app/data
+
 # Change ownership of the app directory
 RUN chown -R bot:nodejs /app
 USER bot
