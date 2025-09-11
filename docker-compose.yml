@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   zsu-bot:
     build: .
@@ -8,8 +6,8 @@ services:
     env_file:
       - .env
     volumes:
-      # Persist database file
-      - ./data:/app/data
+      # Persist database file using named volume
+      - bot_data:/app/data
     environment:
       - NODE_ENV=production
     # Optional: Add logging configuration
@@ -25,3 +23,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+volumes:
+  bot_data:
