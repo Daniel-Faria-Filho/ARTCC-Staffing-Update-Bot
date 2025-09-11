@@ -40,8 +40,9 @@ class ZSUNUCARBot {
       // Create controller table
       this.db.run('CREATE TABLE IF NOT EXISTS controllers (callsign text, logon_date text, controller_name text, controller_cid text)');
       
-      // Create position activity tracking table
-      this.db.run('CREATE TABLE IF NOT EXISTS position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen timestamp DEFAULT CURRENT_TIMESTAMP)');
+      // Create position activity tracking table (drop and recreate to ensure proper schema)
+      this.db.run('DROP TABLE IF EXISTS position_activity');
+      this.db.run('CREATE TABLE position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen timestamp DEFAULT CURRENT_TIMESTAMP)');
       
       // Create airports of interest table (ZSU ARTCC only)
       this.db.run('CREATE TABLE IF NOT EXISTS airports (icao text)');
