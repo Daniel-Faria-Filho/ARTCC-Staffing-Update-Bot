@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  zsu-bot:
+    build: .
+    container_name: zsu-nucar-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Persist database file
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+    # Optional: Add logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Health check
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('Bot is running')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

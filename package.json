@@ -1,0 +1,20 @@
+{
+  "name": "zsu-nucar-bot",
+  "version": "1.0.0",
+  "description": "ZSU ARTCC Discord bot for VATSIM group flights and controller notifications",
+  "main": "index.js",
+  "scripts": {
+    "start": "node start.js",
+    "bot": "node .",
+    "setup": "node setup.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "sqlite3": "^5.1.6",
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": ["vatsim", "discord", "bot", "zsu", "artcc"],
+  "author": "ZSU ARTCC",
+  "license": "MIT"
+}
