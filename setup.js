@@ -33,18 +33,34 @@ db.serialize(() => {
   db.run("INSERT INTO airports VALUES ('TIST')");  // St. Thomas / Cyril E. King
   db.run("INSERT INTO airports VALUES ('TISX')");  // St. Croix / Henry E. Rohlsen
 
+  // Netherlands Antilles (San Juan Center jurisdiction)
+  db.run("INSERT INTO airports VALUES ('TNCM')");  // St. Maarten / Princess Juliana International
+  db.run("INSERT INTO airports VALUES ('TQPF')");  // Anguilla / Clayton J. Lloyd International
+  db.run("INSERT INTO airports VALUES ('TNCE')");  // St. Eustatius / F.D. Roosevelt
+  db.run("INSERT INTO airports VALUES ('TNCB')");  // Saba / Juancho E. Yrausquin
+
   // Create positions of interest table
   db.run('CREATE TABLE IF NOT EXISTS positions (prefix text, suffix text, pos_name text)');
   db.run('DELETE FROM positions');
 
   // ZSU Center
-  db.run("INSERT INTO positions VALUES('ZSU', 'CTR', 'San Juan Center')");
+  db.run("INSERT INTO positions VALUES('SJU', 'CTR', 'San Juan Center')");
 
   // Approaches / Departures
   db.run("INSERT INTO positions VALUES('SJU', 'APP', 'San Juan Approach')");
   db.run("INSERT INTO positions VALUES('SJU', 'DEP', 'San Juan Departure')");
   db.run("INSERT INTO positions VALUES('STT', 'APP', 'St. Thomas Approach')");
   db.run("INSERT INTO positions VALUES('STX', 'APP', 'St. Croix Approach')");
+  db.run("INSERT INTO positions VALUES('SXM', 'APP', 'St. Maarten Approach')");
+  db.run("INSERT INTO positions VALUES('SXM', 'DEP', 'St. Maarten Departure')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'APP', 'St. Maarten Approach')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'DEP', 'St. Maarten Departure')");
+  db.run("INSERT INTO positions VALUES('AXA', 'APP', 'Anguilla Approach')");
+  db.run("INSERT INTO positions VALUES('AXA', 'DEP', 'Anguilla Departure')");
+  db.run("INSERT INTO positions VALUES('EUX', 'APP', 'St. Eustatius Approach')");
+  db.run("INSERT INTO positions VALUES('EUX', 'DEP', 'St. Eustatius Departure')");
+  db.run("INSERT INTO positions VALUES('SAB', 'APP', 'Saba Approach')");
+  db.run("INSERT INTO positions VALUES('SAB', 'DEP', 'Saba Departure')");
 
   // San Juan (TJSJ) - SJU
   db.run("INSERT INTO positions VALUES('SJU', 'TWR', 'San Juan Tower')");
@@ -90,6 +106,31 @@ db.serialize(() => {
   db.run("INSERT INTO positions VALUES('STX', 'TWR', 'St. Croix Tower')");
   db.run("INSERT INTO positions VALUES('STX', 'GND', 'St. Croix Ground')");
   db.run("INSERT INTO positions VALUES('STX', 'DEL', 'St. Croix Delivery')");
+
+  // St. Maarten (TNCM) - SXM
+  db.run("INSERT INTO positions VALUES('SXM', 'TWR', 'St. Maarten Tower')");
+  db.run("INSERT INTO positions VALUES('SXM', 'GND', 'St. Maarten Ground')");
+  db.run("INSERT INTO positions VALUES('SXM', 'DEL', 'St. Maarten Delivery')");
+
+  // St. Maarten (TNCM) - TNCM positions
+  db.run("INSERT INTO positions VALUES('TNCM', 'TWR', 'St. Maarten Tower')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'GND', 'St. Maarten Ground')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'DEL', 'St. Maarten Delivery')");
+
+  // Anguilla (TQPF) - AXA
+  db.run("INSERT INTO positions VALUES('AXA', 'TWR', 'Anguilla Tower')");
+  db.run("INSERT INTO positions VALUES('AXA', 'GND', 'Anguilla Ground')");
+  db.run("INSERT INTO positions VALUES('AXA', 'DEL', 'Anguilla Delivery')");
+
+  // St. Eustatius (TNCE) - EUX
+  db.run("INSERT INTO positions VALUES('EUX', 'TWR', 'St. Eustatius Tower')");
+  db.run("INSERT INTO positions VALUES('EUX', 'GND', 'St. Eustatius Ground')");
+  db.run("INSERT INTO positions VALUES('EUX', 'DEL', 'St. Eustatius Delivery')");
+
+  // Saba (TNCB) - SAB
+  db.run("INSERT INTO positions VALUES('SAB', 'TWR', 'Saba Tower')");
+  db.run("INSERT INTO positions VALUES('SAB', 'GND', 'Saba Ground')");
+  db.run("INSERT INTO positions VALUES('SAB', 'DEL', 'Saba Delivery')");
 
   // Create message history table
   db.run('CREATE TABLE IF NOT EXISTS history (origin text, destination text, notification_time timestamp)');
