@@ -51,10 +51,10 @@ db.serialize(() => {
   db.run("INSERT INTO positions VALUES('SJU', 'DEP', 'San Juan Departure')");
   db.run("INSERT INTO positions VALUES('STT', 'APP', 'St. Thomas Approach')");
   db.run("INSERT INTO positions VALUES('STX', 'APP', 'St. Croix Approach')");
-  db.run("INSERT INTO positions VALUES('SXM', 'APP', 'St. Maarten Approach')");
-  db.run("INSERT INTO positions VALUES('SXM', 'DEP', 'St. Maarten Departure')");
-  db.run("INSERT INTO positions VALUES('TNCM', 'APP', 'St. Maarten Approach')");
-  db.run("INSERT INTO positions VALUES('TNCM', 'DEP', 'St. Maarten Departure')");
+  db.run("INSERT INTO positions VALUES('SXM', 'APP', 'Princess Juliana Approach')");
+  db.run("INSERT INTO positions VALUES('SXM', 'DEP', 'Princess Juliana Departure')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'APP', 'Princess Juliana Approach')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'DEP', 'Princess Juliana Departure')");
   db.run("INSERT INTO positions VALUES('AXA', 'APP', 'Anguilla Approach')");
   db.run("INSERT INTO positions VALUES('AXA', 'DEP', 'Anguilla Departure')");
   db.run("INSERT INTO positions VALUES('EUX', 'APP', 'St. Eustatius Approach')");
@@ -108,14 +108,14 @@ db.serialize(() => {
   db.run("INSERT INTO positions VALUES('STX', 'DEL', 'St. Croix Delivery')");
 
   // St. Maarten (TNCM) - SXM
-  db.run("INSERT INTO positions VALUES('SXM', 'TWR', 'St. Maarten Tower')");
-  db.run("INSERT INTO positions VALUES('SXM', 'GND', 'St. Maarten Ground')");
-  db.run("INSERT INTO positions VALUES('SXM', 'DEL', 'St. Maarten Delivery')");
+  db.run("INSERT INTO positions VALUES('SXM', 'TWR', 'Princess Juliana Tower')");
+  db.run("INSERT INTO positions VALUES('SXM', 'GND', 'Princess Juliana Ground')");
+  db.run("INSERT INTO positions VALUES('SXM', 'DEL', 'Princess Juliana Delivery')");
 
   // St. Maarten (TNCM) - TNCM positions
-  db.run("INSERT INTO positions VALUES('TNCM', 'TWR', 'St. Maarten Tower')");
-  db.run("INSERT INTO positions VALUES('TNCM', 'GND', 'St. Maarten Ground')");
-  db.run("INSERT INTO positions VALUES('TNCM', 'DEL', 'St. Maarten Delivery')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'TWR', 'Princess Juliana Tower')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'GND', 'Princess Juliana Ground')");
+  db.run("INSERT INTO positions VALUES('TNCM', 'DEL', 'Princess Juliana Delivery')");
 
   // Anguilla (TQPF) - AXA
   db.run("INSERT INTO positions VALUES('AXA', 'TWR', 'Anguilla Tower')");
