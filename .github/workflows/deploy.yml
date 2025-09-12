@@ -1,9 +1,7 @@
 name: Deploy to Raspberry Pi
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch: # Only manual triggering
 
 jobs:
   deploy:
