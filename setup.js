@@ -124,10 +124,10 @@ db.serialize(() => {
   db.run("INSERT INTO positions VALUES('TNCM', 'GND', 'Princess Juliana Ground')");
   db.run("INSERT INTO positions VALUES('TNCM', 'DEL', 'Princess Juliana Delivery')");
 
-  // Anguilla (TQPF) - AXA
-  db.run("INSERT INTO positions VALUES('AXA', 'TWR', 'Anguilla Tower')");
-  db.run("INSERT INTO positions VALUES('AXA', 'GND', 'Anguilla Ground')");
-  db.run("INSERT INTO positions VALUES('AXA', 'DEL', 'Anguilla Delivery')");
+  // Anguilla (TQPF) - TQPF
+  db.run("INSERT INTO positions VALUES('TQPF', 'TWR', 'Anguilla Tower')");
+  db.run("INSERT INTO positions VALUES('TQPF', 'GND', 'Anguilla Ground')");
+  db.run("INSERT INTO positions VALUES('TQPF', 'DEL', 'Anguilla Delivery')");
 
   // St. Eustatius (TNCE) - EUX
   db.run("INSERT INTO positions VALUES('EUX', 'TWR', 'St. Eustatius Tower')");
