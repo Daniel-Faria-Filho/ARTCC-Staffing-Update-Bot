@@ -13,8 +13,11 @@ if (!fs.existsSync('.env')) {
   process.exit(1);
 }
 
-// Check if database exists
-if (!fs.existsSync('flights.db')) {
+// Check if database exists in data directory
+const dataDir = path.join(__dirname, 'data');
+const dbPath = path.join(dataDir, 'flights.db');
+
+if (!fs.existsSync(dbPath)) {
   console.log('🗄️  Database not found, setting up...');
   try {
     execSync('node setup.js', { stdio: 'inherit' });

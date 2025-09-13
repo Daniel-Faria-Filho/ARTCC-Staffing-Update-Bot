@@ -31,98 +31,11 @@ class ZSUNUCARBot {
   }
 
   initializeDatabase() {
-    console.log('🗄️ Initializing database...');
-    
-    this.db.serialize(() => {
-      // Create flights table
-      this.db.run('CREATE TABLE IF NOT EXISTS flights (callsign text, origin text, destination text, prefile text)');
-      
-      // Create controller table
-      this.db.run('CREATE TABLE IF NOT EXISTS controllers (callsign text, logon_date text, controller_name text, controller_cid text)');
-      
-      // Create position activity tracking table (drop and recreate to ensure proper schema)
-      this.db.run('DROP TABLE IF EXISTS position_activity');
-      this.db.run('CREATE TABLE position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen integer, logon_time integer)');
-      
-      // Create airports of interest table (ZSU ARTCC only)
-      this.db.run('CREATE TABLE IF NOT EXISTS airports (icao text)');
-      
-      // Puerto Rico
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJSJ')");  // San Juan / Luis Muñoz Marín
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJIG')");  // Isla Grande / Fernando Luis Ribas Dominicci
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJBQ')");  // Aguadilla / Rafael Hernández
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJPS')");  // Ponce / Mercedita
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJMZ')");  // Mayagüez / Eugenio María de Hostos
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJRV')");  // Ceiba / José Aponte de la Torre (Roosevelt Roads)
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TJVQ')");  // Vieques / Antonio Rivera Rodríguez
-
-      // U.S. Virgin Islands
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TIST')");  // St. Thomas / Cyril E. King
-      this.db.run("INSERT OR IGNORE INTO airports VALUES ('TISX')");  // St. Croix / Henry E. Rohlsen
-
-      // Create positions of interest table
-      this.db.run('CREATE TABLE IF NOT EXISTS positions (prefix text, suffix text, pos_name text)');
-      
-      // ZSU Center
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('ZSU', 'CTR', 'San Juan Center')");
-
-      // Approaches / Departures
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SJU', 'APP', 'San Juan Approach')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SJU', 'DEP', 'San Juan Departure')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STT', 'APP', 'St. Thomas Approach')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STX', 'APP', 'St. Croix Approach')");
-
-      // San Juan (TJSJ) - SJU
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SJU', 'TWR', 'San Juan Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SJU', 'GND', 'San Juan Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SJU', 'DEL', 'San Juan Delivery')");
-
-      // Isla Grande (TJIG) - SIG
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SIG', 'TWR', 'Isla Grande Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SIG', 'GND', 'Isla Grande Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('SIG', 'DEL', 'Isla Grande Delivery')");
-
-      // Aguadilla (TJBQ) - BQN
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('BQN', 'TWR', 'Aguadilla Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('BQN', 'GND', 'Aguadilla Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('BQN', 'DEL', 'Aguadilla Delivery')");
-
-      // Ponce (TJPS) - PSE
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('PSE', 'TWR', 'Ponce Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('PSE', 'GND', 'Ponce Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('PSE', 'DEL', 'Ponce Delivery')");
-
-      // Mayagüez (TJMZ) - MAZ
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('MAZ', 'TWR', 'Mayagüez Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('MAZ', 'GND', 'Mayagüez Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('MAZ', 'DEL', 'Mayagüez Delivery')");
-
-      // Ceiba (TJRV) - RVR
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('RVR', 'TWR', 'Ceiba Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('RVR', 'GND', 'Ceiba Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('RVR', 'DEL', 'Ceiba Delivery')");
-
-      // Vieques (TJVQ) - VQS
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('VQS', 'TWR', 'Vieques Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('VQS', 'GND', 'Vieques Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('VQS', 'DEL', 'Vieques Delivery')");
-
-      // St. Thomas (TIST) - STT
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STT', 'TWR', 'St. Thomas Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STT', 'GND', 'St. Thomas Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STT', 'DEL', 'St. Thomas Delivery')");
-
-      // St. Croix (TISX) - STX
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STX', 'TWR', 'St. Croix Tower')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STX', 'GND', 'St. Croix Ground')");
-      this.db.run("INSERT OR IGNORE INTO positions VALUES('STX', 'DEL', 'St. Croix Delivery')");
-
-      // Create message history table
-      this.db.run('CREATE TABLE IF NOT EXISTS history (origin text, destination text, notification_time timestamp)');
-
-      // Create position activity table
-      this.db.run('CREATE TABLE IF NOT EXISTS position_activity (callsign text, cid text, controller_name text, status text, pos_name text)');
-    });
+    console.log('🗄️ Database initialization handled by setup.js...');
+    // Database setup is handled by setup.js - no duplicate code needed here
+    // Just ensure the position_activity table has the correct schema for tracking
+    this.db.run('DROP TABLE IF EXISTS position_activity');
+    this.db.run('CREATE TABLE position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen integer, logon_time integer)');
   }
 
   setupEventHandlers() {
