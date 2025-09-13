@@ -2,16 +2,18 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
+console.log('🗄️  Setting up ZSU NUCAR Bot database...');
+
 // Ensure data directory exists
 const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {
+  console.log('📁 Creating data directory...');
   fs.mkdirSync(dataDir, { recursive: true });
+  console.log('✅ Data directory created');
 }
 
 // Create (or open) the database and connect to it
 const db = new sqlite3.Database(path.join(dataDir, 'flights.db'));
-
-console.log('🗄️  Setting up ZSU NUCAR Bot database...');
 
 // Create tables
 db.serialize(() => {

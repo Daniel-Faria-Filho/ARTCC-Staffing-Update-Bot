@@ -24,6 +24,9 @@ RUN mkdir -p /app/data && chown -R bot:nodejs /app/data
 RUN chown -R bot:nodejs /app
 USER bot
 
+# Initialize database during build
+RUN node setup.js
+
 # Expose port (if needed for health checks)
 EXPOSE 3000
 
