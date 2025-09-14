@@ -17,15 +17,14 @@ if (!fs.existsSync('.env')) {
 const dataDir = path.join(__dirname, 'data');
 const dbPath = path.join(dataDir, 'flights.db');
 
-if (!fs.existsSync(dbPath)) {
-  console.log('🗄️  Database not found, setting up...');
-  try {
-    execSync('node setup.js', { stdio: 'inherit' });
-    console.log('✅ Database setup complete!');
-  } catch (error) {
-    console.error('❌ Database setup failed:', error.message);
-    process.exit(1);
-  }
+// Always run setup to ensure database is properly initialized
+console.log('🗄️  Ensuring database is properly initialized...');
+try {
+  execSync('node setup.js', { stdio: 'inherit' });
+  console.log('✅ Database setup complete!');
+} catch (error) {
+  console.error('❌ Database setup failed:', error.message);
+  process.exit(1);
 }
 
 console.log('✅ Environment configuration looks good!');
