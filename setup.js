@@ -144,8 +144,8 @@ db.serialize(() => {
   // Create message history table
   db.run('CREATE TABLE IF NOT EXISTS history (origin text, destination text, notification_time timestamp)');
 
-  // Create position activity table
-  db.run('CREATE TABLE IF NOT EXISTS position_activity (callsign text, cid text, controller_name text, status text, pos_name text)');
+  // Create position activity table with tracking columns used by the bot
+  db.run('CREATE TABLE IF NOT EXISTS position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen integer, logon_time integer)');
 
   console.log('✅ Database initialized successfully!');
 });

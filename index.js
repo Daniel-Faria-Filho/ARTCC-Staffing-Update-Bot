@@ -32,10 +32,7 @@ class ZSUNUCARBot {
 
   initializeDatabase() {
     console.log('🗄️ Database initialization handled by setup.js...');
-    // Database setup is handled by setup.js - no duplicate code needed here
-    // Just ensure the position_activity table has the correct schema for tracking
-    this.db.run('DROP TABLE IF EXISTS position_activity');
-    this.db.run('CREATE TABLE position_activity (callsign text, cid text, controller_name text, status text, pos_name text, last_seen integer, logon_time integer)');
+    // Database setup is handled by setup.js - avoid redefining tables here
   }
 
   setupEventHandlers() {
