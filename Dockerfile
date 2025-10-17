@@ -33,5 +33,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "console.log('Bot is running')" || exit 1
 
-# Start the bot
-CMD ["node", "."]
+# Start the bot via start.js so setup.js initializes the database each run
+CMD ["node", "start.js"]

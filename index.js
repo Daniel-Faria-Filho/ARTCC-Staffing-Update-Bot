@@ -162,6 +162,10 @@ class ZSUNUCARBot {
             return;
           }
 
+          // Log configured position patterns (once)
+          const positionPatterns = positions.map(p => `${p.prefix}_..._${p.suffix}`);
+          console.log(`🧩 Loaded ${positions.length} position patterns: ${positionPatterns.join(', ')}`);
+
           // Check each controller against positions
           const processedControllers = new Set();
           
@@ -174,6 +178,7 @@ class ZSUNUCARBot {
             }
             
             // Find matching position
+            let matched = false;
             for (const position of positions) {
               const { prefix, suffix, pos_name } = position;
               
@@ -181,7 +186,16 @@ class ZSUNUCARBot {
               if (callsign.startsWith(prefix) && callsign.endsWith(suffix)) {
                 this.checkControllerActivity(callsign, controller_cid, controller_name, pos_name, silentMode);
                 processedControllers.add(callsign);
+                matched = true;
                 break; // Only process each controller once
+              }
+            }
+
+            // If not matched, emit a targeted debug line for troubleshooting
+            if (!matched) {
+              const hasAtcSuffix = /(CTR|APP|DEP|TWR|GND|DEL)$/i.test(callsign);
+              if (hasAtcSuffix) {
+                console.log(`🕵️ No position match for callsign '${callsign}'. Check that a position with prefix '${callsign.split('_')[0]}' and matching suffix exists.`);
               }
             }
           }
