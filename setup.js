@@ -136,10 +136,7 @@ db.serialize(() => {
   db.run("INSERT INTO positions VALUES('EUX', 'GND', 'St. Eustatius Ground')");
   db.run("INSERT INTO positions VALUES('EUX', 'DEL', 'St. Eustatius Delivery')");
 
-  // Saba (TNCB) - SAB
-  db.run("INSERT INTO positions VALUES('SAB', 'TWR', 'Saba Tower')");
-  db.run("INSERT INTO positions VALUES('SAB', 'GND', 'Saba Ground')");
-  db.run("INSERT INTO positions VALUES('SAB', 'DEL', 'Saba Delivery')");
+
 
   // Create message history table
   db.run('CREATE TABLE IF NOT EXISTS history (origin text, destination text, notification_time timestamp)');
